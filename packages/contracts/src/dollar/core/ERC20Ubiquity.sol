@@ -58,14 +58,6 @@ abstract contract ERC20Ubiquity is
         _;
     }
 
-    modifier GithubActionTest() {
-        require(
-            accessControl.hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
-            "ERC20Ubiquity: not admin"
-        );
-        _;
-    }
-
     // /**
     //  * @notice Contract constructor
     //  * @param _manager Access control address

@@ -4,14 +4,9 @@ on:
   push:
     branches:
       - collisionAction
-    paths:
-      - packages/contracts/test/**/**/*.sol
-      - packages/contracts/src/**/**/*.sol.sol
   pull_request:
     # Optionally configure to run only for changes in specific files. For example:
-    paths:
-    - packages/contracts/test/**/**/*.sol
-    - packages/contracts/src/**/**/*.sol.sol
+
 
 
 jobs:
