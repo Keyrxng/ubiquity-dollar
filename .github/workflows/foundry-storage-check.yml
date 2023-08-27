@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - collisionAction
+    paths:
+      - packages/contracts/test/**/**/*.sol
+      - packages/contracts/src/**/**/*.sol.sol
   pull_request:
     # Optionally configure to run only for changes in specific files. For example:
     paths:
@@ -24,7 +27,7 @@ jobs:
       - name: Find contract files
         id: set_contract
         run: |
-          contracts=$(find packages/contracts -type f -name "*.sol")
+          contracts=$(find packages/contracts/src -type f -name "*.sol")
           contract_list=""
           for contract in $contracts; do
           contract_list="$contract_list\n- contract: $contract"
