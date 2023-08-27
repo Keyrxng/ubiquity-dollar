@@ -1,0 +1,69 @@
+name: Check storage layout
+
+on:
+  push:
+    branches:
+      - collisionAction
+  pull_request:
+    # Optionally configure to run only for changes in specific files. For example:
+    paths:
+    - packages/contracts/test/**/**/*.sol
+    - packages/contracts/src/**/**/*.sol.sol
+
+
+jobs:
+  discover_contracts:
+    runs-on: ubuntu-latest
+    outputs:
+      contract_list: ${{ steps.set_contract.outputs.contract_list }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Find contract files
+        id: set_contract
+        run: |
+          contracts=$(find packages/contracts -type f -name "*.sol")
+          contract_list=""
+          for contract in $contracts; do
+          contract_list="$contract_list\n- contract: $contract"
+          done
+          echo "::set-output name=contract_list::$contract_list"
+
+  check_storage_layout:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.discover_contracts.outputs.contract_list) }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Find contract files
+        id: set_contract
+        run: |
+          contracts=$(find packages/contracts -type f -name "*.sol")
+          contract_list=""
+          for contract in $contracts; do
+              contract_list="$contract_list\n- contract: $contract"
+          done
+          echo "::set-output name=contract_list::$contract_list"
+
+      - name: Install Foundry
+        uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+
+    
+
+      - name: Check storage layout
+        uses: Rubilmax/foundry-storage-check@v3.6
+        with:
+          contract: ${{ matrix.contract }}
+          # settings below are optional, but allows to check whether the added storage slots are empty on the deployed contract
+        #   rpcUrl: wss://eth-mainnet.g.alchemy.com/v2/<YOUR_ALCHEMY_KEY> # the RPC url to use to query the deployed contract's storage slots
+        #   address: 0x0000000000000000000000000000000000000000 # the address at which the contract check is deployed
+        #   failOnRemoval: true # fail the CI when removing storage slots (default: false)
