@@ -93,13 +93,17 @@ const DepositShare = ({ onStake, disabled, maxLp, managedContracts: contracts }:
 
   useEffect(() => {
     (async function () {
-      const prefetched = await prefetchConstants(contracts);
-      setPrefetched(prefetched);
-      const [minApy, maxApy] = await Promise.all([
-        calculateApyForWeeks(contracts, prefetched, MIN_WEEKS),
-        calculateApyForWeeks(contracts, prefetched, MAX_WEEKS),
-      ]);
-      setApyBounds([minApy, maxApy]);
+      try {
+        const prefetched = await prefetchConstants(contracts);
+        setPrefetched(prefetched);
+        const [minApy, maxApy] = await Promise.all([
+          calculateApyForWeeks(contracts, prefetched, MIN_WEEKS),
+          calculateApyForWeeks(contracts, prefetched, MAX_WEEKS),
+        ]);
+        setApyBounds([minApy, maxApy]);
+      } catch (error) {
+        console.error("Error in fetching constants or calculating APY:", error);
+      }
     })();
   }, []);
 

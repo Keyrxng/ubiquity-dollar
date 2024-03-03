@@ -60,7 +60,7 @@ async function connectManagerContracts(manager: Contract, provider: NonNullable<
     creditNftCalculator,
     creditCalculator,
   ] = await Promise.all([
-    manager.dollarTokenAddress(),
+    manager.dollarTokenAddress().catch(console.error),
     manager.stableSwapMetaPoolAddress(),
     manager.twapOracleAddress(),
     manager.dollarMintingCalculatorAddress(),

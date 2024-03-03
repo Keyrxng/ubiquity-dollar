@@ -2,7 +2,6 @@ export const RPC_DELAY = 300;
 
 export const RPC_LIST: string[] = [
     "https://ethereum.publicnode.com",
-    "https://cloudflare-eth.com",
     "https://rpc.ankr.com/eth",
     "https://eth-mainnet.public.blastapi.io",
     "https://eth-mainnet-public.unifra.io",
