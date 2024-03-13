@@ -1,4 +1,4 @@
-import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider, JsonRpcSigner, Web3Provider, WebSocketProvider } from "@ethersproject/providers";
 import { useAccount, useProvider, useSigner } from "wagmi";
 import { WagmiConfig, createClient, chain } from "wagmi";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
@@ -47,7 +47,17 @@ export const UseWeb3Provider: FC<ChildrenShim> = ({ children }) => {
 };
 
 const useWeb3 = (): [Web3State] => {
-  const provider = useProvider();
+  let provider: PossibleProviders = null;
+  if (typeof window !== "undefined") {
+    if (window.ethereum) {
+      provider = new Web3Provider(window.ethereum);
+    } else if (IS_DEV) {
+      provider = new JsonRpcProvider(LOCAL_NODE_ADDRESS);
+    } else {
+      provider = new WebSocketProvider("wss://ethereum-rpc.publicnode.com", 1);
+    }
+  }
+
   const { isConnecting, address } = useAccount();
   const { data: signer } = useSigner();
 
