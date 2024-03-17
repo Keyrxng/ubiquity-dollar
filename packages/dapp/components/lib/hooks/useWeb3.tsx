@@ -4,6 +4,7 @@ import { WagmiConfig, createClient, chain } from "wagmi";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
 import { FC } from "react";
 import { ChildrenShim } from "./children-shim";
+import { useRpcHandler } from "./use-handler";
 
 const IS_DEV = process.env.NODE_ENV == "development";
 const LOCAL_NODE_ADDRESS = "http://localhost:8545";
@@ -21,7 +22,7 @@ export type Web3State = {
 };
 
 const metamaskInstalled = typeof window !== "undefined" ? !!window?.ethereum?.request : false;
-
+const providers = await useRpcHandler();
 const client = createClient(
   getDefaultClient({
     chains: [chain.mainnet, chain.hardhat, chain.localhost],
