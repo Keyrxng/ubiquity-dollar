@@ -27,6 +27,7 @@ export const ManagedContractsContext = createContext<ManagedContracts>(null);
 
 export const ManagedContractsContextProvider: React.FC<ChildrenShim> = ({ children }) => {
   const [{ provider }] = useWeb3();
+
   const deployedContracts = useDeployedContracts();
   const [managedContracts, setManagedContracts] = useState<ManagedContracts>(null);
 
