@@ -1377,6 +1377,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@keyrxng/rpc-handler@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@keyrxng/rpc-handler@npm:1.0.1"
+  dependencies:
+    "@ethersproject/providers": 5.7.2
+  checksum: 20039abda24bebea85bce1f542222a01178885b7d8ac3b76d3074b8fb577bb5b3f20b407105d2a98aab5b0c62b2043ac30024b5ba663eac6d13dcca8b15c5e54
+  languageName: node
+  linkType: hard
+
 "@metamask/detect-provider@npm:^1.2.0":
   version: 1.2.0
   resolution: "@metamask/detect-provider@npm:1.2.0"
@@ -2691,6 +2700,7 @@ __metadata:
     "@ethersproject/abi": ^5.0.0
     "@ethersproject/bytes": ^5.0.0
     "@ethersproject/providers": ^5.6.8
+    "@keyrxng/rpc-handler": ^1.0.1
     "@tippyjs/react": ^4.2.5
     "@typechain/ethers-v5": ^10.1.0
     "@types/btoa": ^1.2.3
