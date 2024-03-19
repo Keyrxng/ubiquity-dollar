@@ -1,4 +1,4 @@
-name: Build & Deploy
+name: Build
 
 on:
   push:
@@ -48,12 +48,8 @@ jobs:
           yarn
           yarn build:all
 
-      - name: Deploy to Cloudflare
-        uses: ubiquity/cloudflare-deploy-action@main
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
         with:
-          repository: ${{ github.repository }}
-          production_branch: ${{ github.event.repository.default_branch }}
-          output_directory: "packages/dapp/dist"
-          current_branch: ${{ github.ref_name }}
-          pull_request_number: ${{ github.event.pull_request.number }}
-          commit_sha: ${{ github.event.pull_request.head.sha }}
+          name: static
+          path: packages/dapp/dist
