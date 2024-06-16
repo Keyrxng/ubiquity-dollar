@@ -94,10 +94,6 @@ class Handler {
     return this.provider_;
   }
 
-  get handler() {
-    return this.handler_;
-  }
-
   get provider() {
     if (!this.provider_) {
       this.init();
@@ -105,12 +101,16 @@ class Handler {
     return this.provider_;
   }
 
-  set handler(handler: RPCHandler | null) {
-    this.handler_ = handler;
-  }
-
   set provider(provider: JsonRpcProvider | null) {
     this.provider_ = provider;
+  }
+
+  get handler() {
+    return this.handler_;
+  }
+
+  set handler(handler: RPCHandler | null) {
+    this.handler_ = handler;
   }
 }
 
