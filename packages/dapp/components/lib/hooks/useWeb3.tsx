@@ -1,12 +1,13 @@
-import { JsonRpcProvider, JsonRpcSigner, Web3Provider, WebSocketProvider } from "@ethersproject/providers";
-import { useAccount, useProvider, useSigner } from "wagmi";
+import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from "@ethersproject/providers";
+import { useAccount, useSigner } from "wagmi";
 import { WagmiConfig, createClient, chain } from "wagmi";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { ChildrenShim } from "./children-shim";
+// @ts-expect-error - no types
+import { RPCHandler } from "@ubiquity-dao/rpc-handler";
 
-const IS_DEV = process.env.NODE_ENV == "development";
-const LOCAL_NODE_ADDRESS = "http://localhost:8545";
+const IS_DEV = process.env.NEXT_PUBLIC_NODE_ENV === "development";
 
 export type PossibleProviders = Web3Provider | JsonRpcProvider | null;
 
@@ -46,32 +47,46 @@ export const UseWeb3Provider: FC<ChildrenShim> = ({ children }) => {
   );
 };
 
-const useWeb3 = (): [Web3State] => {
-  let provider: PossibleProviders = null;
-  if (typeof window !== "undefined") {
-    if (window.ethereum) {
-      provider = new Web3Provider(window.ethereum);
-    } else if (IS_DEV) {
-      provider = new JsonRpcProvider(LOCAL_NODE_ADDRESS);
-    } else {
-      provider = new WebSocketProvider("wss://ethereum-rpc.publicnode.com", 1);
-    }
-  }
+const useHandlerFastestRpc = (): JsonRpcProvider => {
+  const [provider, setProvider] = useState<JsonRpcProvider | null>(null);
 
+  const handler = new RPCHandler({
+    networkId: IS_DEV ? 31337 : 1,
+    autoStorage: true,
+    cacheRefreshCycles: 10,
+    rpcTimeout: 1500,
+    networkName: null,
+    runtimeRpcs: null,
+    networkRpcs: null,
+  });
+
+  useEffect(() => {
+    async function getProvider() {
+      const provider = await handler.getFastestRpcProvider();
+      setProvider(provider);
+    }
+    getProvider();
+  }, []);
+
+  return provider as JsonRpcProvider;
+};
+
+const useWeb3 = (): [Web3State] => {
   const { isConnecting, address } = useAccount();
   const { data: signer } = useSigner();
+  const provider = useHandlerFastestRpc();
 
-  return [
-    {
-      metamaskInstalled,
-      jsonRpcEnabled: IS_DEV,
-      providerMode: "none",
-      provider: provider as PossibleProviders,
-      connecting: isConnecting,
-      walletAddress: address as string,
-      signer: signer as JsonRpcSigner,
-    },
-  ];
+  const web3State = {
+    metamaskInstalled,
+    jsonRpcEnabled: IS_DEV,
+    providerMode: "none" as "none" | "metamask" | "jsonrpc",
+    provider: provider as PossibleProviders,
+    connecting: isConnecting,
+    walletAddress: address as string,
+    signer: signer as JsonRpcSigner,
+  };
+
+  return [web3State];
 };
 
 export default useWeb3;
